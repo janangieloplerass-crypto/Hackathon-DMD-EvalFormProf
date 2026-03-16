@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Evaluation Form</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #d1d5db;
+            --accent: #1d4ed8;
+            --accent-soft: #dbeafe;
+            --error: #dc2626;
+            --error-soft: #fef2f2;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 32px 16px;
+        }
+
+        .wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 24px 28px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .card-header p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        form {
+            padding: 24px 28px 28px;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="year"], select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            background: #fff;
+        }
+
+        input[type="text"]:focus, input[type="year"]:focus, select:focus {
+            border-color: var(--accent);
+            outline: 3px solid var(--accent-soft);
+        }
+
+        input[type="year"] {
+            background-color: #f9fafb;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .error {
+            border-color: var(--error);
+            background-color: var(--error-soft);
+        }
+
+        .error-msg {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: -4px;
+        }
+
+        .privacy-note,
+        .weight-note {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid var(--accent);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .weight-note {
+            margin-bottom: 28px;
+        }
+
+        fieldset {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            margin: 0 0 20px;
+            padding: 18px;
+        }
+
+        legend {
+            padding: 0 8px;
+            font-weight: 700;
+        }
+
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(90px, 1fr));
+            gap: 10px;
+        }
+
+        .scale-option {
+            position: relative;
+        }
+
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scale-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 92px;
+            padding: 12px 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s ease;
+            font-weight: 600;
+            background: #fff;
+        }
+
+        .scale-option span {
+            display: block;
+        }
+
+        .scale-option .score {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--accent);
+        }
+
+        .scale-option .meaning {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .scale-option input:checked + label {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            box-shadow: inset 0 0 0 1px var(--accent);
+        }
+
+        .scale-option input:focus + label {
+            outline: 3px solid rgba(29, 78, 216, 0.2);
+        }
+
+        .actions {
+            margin-top: 28px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 24px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        button:disabled {
+            background: var(--muted);
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 700px) {
+            .scale-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header,
+            form {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="card">
+            <div class="card-header">
+                <h1>Evaluation Form</h1>
+                <p>Complete the evaluation using the 1-5 Likert scale below.</p>
+            </div>
+
+            <form id="evalForm" action="submit.php" method="post" autocomplete="off">
+                <div class="intro-grid">
+                    <div class="field-group">
+                        <label for="student_id">Student ID <span style="color: var(--muted); font-size: 0.85em;">(Format: XXXX-YY-ZZZZZ)</span></label>
+                        <input
+                            type="text"
+                            id="student_id"
+                            name="student_id"
+                            maxlength="13"
+                            pattern="\\d{4}-\\d{2}-\\d{5}"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            required
+                        >
+                        <div id="student_id_error" class="error-msg" style="display: none;"></div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="year">Year</label>
+                        <input
+                            type="text"
+                            id="year"
+                            name="year"
+                            readonly
+                            required
+                        >
+                    </div>
+
+                    <div class="field-group">
+                        <label for="department">Department</label>
+                        <select id="department" name="department" required>
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="College of Business Administration">College of Business Administration</option>
+                            <option value="College of Education">College of Education</option>
+                            <option value="College of Entrepreneurship">College of Entrepreneurship</option>
+                            <option value="College of Computer Studies">College of Computer Studies</option>
+                            <option value="College of Accountancy">College of Accountancy</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="professor">Professor</label>
+                        <select id="professor" name="professor" required>
+                            <option value="" disabled selected>Select Professor</option>
+                        </select>
+                    </div>
+
+                    <div class="privacy-note">
+                        Student ID, Department, and Year are recorded only in the audit trail for accountability and are excluded from anonymized results storage.
+                    </div>
+
+                </div>
+
+                <input type="hidden" name="rater_type" value="student">
+
+                <fieldset>
+                    <legend>Metric 1</legend>
+                    <div class="scale-grid">
+                        <div class="scale-option">
+                            <input type="radio" id="m1_1" name="metric1" value="1" required>
+                            <label for="m1_1">
+                                <span class="score">1</span>
+                                <span class="meaning">Strongly Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m1_2" name="metric1" value="2">
+                            <label for="m1_2">
+                                <span class="score">2</span>
+                                <span class="meaning">Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m1_3" name="metric1" value="3">
+                            <label for="m1_3">
+                                <span class="score">3</span>
+                                <span class="meaning">Neutral</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m1_4" name="metric1" value="4">
+                            <label for="m1_4">
+                                <span class="score">4</span>
+                                <span class="meaning">Agree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m1_5" name="metric1" value="5">
+                            <label for="m1_5">
+                                <span class="score">5</span>
+                                <span class="meaning">Strongly Agree</span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Metric 2</legend>
+                    <div class="scale-grid">
+                        <div class="scale-option">
+                            <input type="radio" id="m2_1" name="metric2" value="1" required>
+                            <label for="m2_1">
+                                <span class="score">1</span>
+                                <span class="meaning">Strongly Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m2_2" name="metric2" value="2">
+                            <label for="m2_2">
+                                <span class="score">2</span>
+                                <span class="meaning">Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m2_3" name="metric2" value="3">
+                            <label for="m2_3">
+                                <span class="score">3</span>
+                                <span class="meaning">Neutral</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m2_4" name="metric2" value="4">
+                            <label for="m2_4">
+                                <span class="score">4</span>
+                                <span class="meaning">Agree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m2_5" name="metric2" value="5">
+                            <label for="m2_5">
+                                <span class="score">5</span>
+                                <span class="meaning">Strongly Agree</span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Metric 3</legend>
+                    <div class="scale-grid">
+                        <div class="scale-option">
+                            <input type="radio" id="m3_1" name="metric3" value="1" required>
+                            <label for="m3_1">
+                                <span class="score">1</span>
+                                <span class="meaning">Strongly Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m3_2" name="metric3" value="2">
+                            <label for="m3_2">
+                                <span class="score">2</span>
+                                <span class="meaning">Disagree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m3_3" name="metric3" value="3">
+                            <label for="m3_3">
+                                <span class="score">3</span>
+                                <span class="meaning">Neutral</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m3_4" name="metric3" value="4">
+                            <label for="m3_4">
+                                <span class="score">4</span>
+                                <span class="meaning">Agree</span>
+                            </label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="m3_5" name="metric3" value="5">
+                            <label for="m3_5">
+                                <span class="score">5</span>
+                                <span class="meaning">Strongly Agree</span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="actions">
+                    <a href="index.html" class="button" style="margin-right: auto; background: #6b7280; text-decoration: none; display: inline-block; padding: 14px 24px;">← Back to Home</a>
+                    <button type="submit" id="submitBtn">Submit Evaluation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        const studentIdInput = document.getElementById('student_id');
+        const yearInput = document.getElementById('year');
+        const deptSelect = document.getElementById('department');
+        const profSelect = document.getElementById('professor');
+        const form = document.getElementById('evalForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorDiv = document.getElementById('student_id_error');
+
+        // Dept code mapping (YY -> dept)
+        const deptMap = {
+            '01': 'College of Business Administration',
+            '02': 'College of Education',
+            '03': 'College of Entrepreneurship',
+            '04': 'College of Computer Studies',
+            '05': 'College of Accountancy'
+        };
+
+        // Numbers only on keypress
+        studentIdInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        // Auto-format and validate on input/blur
+        studentIdInput.addEventListener('input', () => {
+            formatStudentId();
+        });
+        studentIdInput.addEventListener('blur', validateAndParseStudentId);
+        studentIdInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            navigator.clipboard.readText().then(text => {
+                let val = text.replace(/[^0-9]/g, '');
+                studentIdInput.value = val.slice(0,11);
+                formatStudentId();
+            }).catch(() => {});
+        });
+
+        function formatStudentId() {
+            let val = studentIdInput.value.replace(/[^0-9]/g, '');
+            let formatted = val.slice(0,4);
+            if (val.length > 4) {
+                formatted += '-' + val.slice(4,6);
+            }
+            if (val.length > 6) {
+                formatted += '-' + val.slice(6,11);
+            }
+            studentIdInput.value = formatted;
+            // Re-validate after format
+            if (formatted.length === 13) {
+                validateAndParseStudentId();
+            }
+        }
+
+        async function validateAndParseStudentId() {
+            const val = studentIdInput.value;
+            const regex = /^\d{4}-\d{2}-\d{5}$/;
+            if (!regex.test(val)) {
+                studentIdInput.classList.add('error');
+                errorDiv.textContent = 'Invalid Student ID! Must be exactly 4-2-5 digits (e.g., 2024-01-12345)';
+                errorDiv.style.display = 'block';
+                yearInput.value = '';
+                deptSelect.value = '';
+                profSelect.innerHTML = '<option value="" disabled selected>Select Professor</option>';
+                submitBtn.disabled = true;
+                return false;
+            }
+
+            // Check if student exists in DB
+            const studentData = await checkStudentExists(val);
+            if (!studentData.exists) {
+                studentIdInput.classList.add('error');
+                errorDiv.textContent = 'Student ID not found! Please check and try again.';
+                errorDiv.style.display = 'block';
+                yearInput.value = '';
+                deptSelect.value = '';
+                profSelect.innerHTML = '<option value="" disabled selected>Select Professor</option>';
+                submitBtn.disabled = true;
+                return false;
+            }
+
+            // Use DB data (year/dept)
+            yearInput.value = studentData.year || '';
+            deptSelect.value = studentData.dept || '';
+            if (studentData.dept) {
+                loadProfessors(studentData.dept);
+            }
+
+            studentIdInput.classList.remove('error');
+            errorDiv.style.display = 'none';
+            submitBtn.disabled = false;
+            return true;
+        }
+
+        // Load professors on dept change
+        deptSelect.addEventListener('change', (e) => {
+            const dept = e.target.value;
+            if (dept) {
+                loadProfessors(dept);
+            } else {
+                profSelect.innerHTML = '<option value="" disabled selected>Select Professor</option>';
+            }
+        });
+
+        async function checkStudentExists(studentId) {
+            try {
+                const response = await fetch(`validate_student.php?id=${encodeURIComponent(studentId)}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error('Failed to check student:', err);
+                return {exists: false};
+            }
+        }
+
+        async function loadProfessors(dept) {
+            try {
+                const response = await fetch(`data/professors.php?dept=${encodeURIComponent(dept)}`);
+                const profs = await response.json();
+                profSelect.innerHTML = '<option value="" disabled selected>Select Professor</option>';
+                profs.forEach(prof => {
+                    const option = document.createElement('option');
+                    option.value = prof.name;
+                    option.textContent = prof.name;
+                    profSelect.appendChild(option);
+                });
+            } catch (err) {
+                console.error('Failed to load professors:', err);
+                profSelect.innerHTML = '<option value="">Error loading professors</option>';
+            }
+        }
+
+        // Form submit validation
+        form.addEventListener('submit', (e) => {
+            if (!validateAndParseStudentId()) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

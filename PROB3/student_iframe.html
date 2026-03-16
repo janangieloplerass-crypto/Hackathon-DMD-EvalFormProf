@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #d1d5db;
+            --accent: #1d4ed8;
+            --accent-soft: #dbeafe;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--card);
+            color: var(--text);
+            padding: 24px;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        form {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        fieldset {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            margin: 0 0 20px 0;
+            padding: 18px;
+        }
+
+        legend {
+            padding: 0 8px;
+            font-weight: 700;
+        }
+
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(90px, 1fr));
+            gap: 10px;
+        }
+
+        .scale-option {
+            position: relative;
+        }
+
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scale-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 92px;
+            padding: 12px 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s ease;
+            font-weight: 600;
+            background: #fff;
+        }
+
+        .scale-option span {
+            display: block;
+        }
+
+        .scale-option .score {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--accent);
+        }
+
+        .scale-option .meaning {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .scale-option input:checked + label {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            box-shadow: inset 0 0 0 1px var(--accent);
+        }
+
+        .scale-option input:focus + label {
+            outline: 3px solid rgba(29, 78, 216, 0.2);
+        }
+
+        .actions {
+            margin-top: 28px;
+            text-align: right;
+        }
+
+        .submit-btn {
+            border: none;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 24px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1e40af;
+        }
+
+        @media (max-width: 700px) {
+            .scale-grid { grid-template-columns: 1fr; }
+            body { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <form action="submit.php" method="post" autocomplete="off">
+        <input type="hidden" name="rater_type" value="student">
+        
+        <fieldset>
+            <legend>Metric 1</legend>
+            <div class="scale-grid">
+                <div class="scale-option">
+                    <input type="radio" id="m1_1-iframe" name="metric1" value="1" required>
+                    <label for="m1_1-iframe">
+                        <span class="score">1</span>
+                        <span class="meaning">Strongly Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m1_2-iframe" name="metric1" value="2">
+                    <label for="m1_2-iframe">
+                        <span class="score">2</span>
+                        <span class="meaning">Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m1_3-iframe" name="metric1" value="3">
+                    <label for="m1_3-iframe">
+                        <span class="score">3</span>
+                        <span class="meaning">Neutral</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m1_4-iframe" name="metric1" value="4">
+                    <label for="m1_4-iframe">
+                        <span class="score">4</span>
+                        <span class="meaning">Agree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m1_5-iframe" name="metric1" value="5">
+                    <label for="m1_5-iframe">
+                        <span class="score">5</span>
+                        <span class="meaning">Strongly Agree</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Metric 2</legend>
+            <div class="scale-grid">
+                <div class="scale-option">
+                    <input type="radio" id="m2_1-iframe" name="metric2" value="1" required>
+                    <label for="m2_1-iframe">
+                        <span class="score">1</span>
+                        <span class="meaning">Strongly Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m2_2-iframe" name="metric2" value="2">
+                    <label for="m2_2-iframe">
+                        <span class="score">2</span>
+                        <span class="meaning">Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m2_3-iframe" name="metric2" value="3">
+                    <label for="m2_3-iframe">
+                        <span class="score">3</span>
+                        <span class="meaning">Neutral</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m2_4-iframe" name="metric2" value="4">
+                    <label for="m2_4-iframe">
+                        <span class="score">4</span>
+                        <span class="meaning">Agree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m2_5-iframe" name="metric2" value="5">
+                    <label for="m2_5-iframe">
+                        <span class="score">5</span>
+                        <span class="meaning">Strongly Agree</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Metric 3</legend>
+            <div class="scale-grid">
+                <div class="scale-option">
+                    <input type="radio" id="m3_1-iframe" name="metric3" value="1" required>
+                    <label for="m3_1-iframe">
+                        <span class="score">1</span>
+                        <span class="meaning">Strongly Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m3_2-iframe" name="metric3" value="2">
+                    <label for="m3_2-iframe">
+                        <span class="score">2</span>
+                        <span class="meaning">Disagree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m3_3-iframe" name="metric3" value="3">
+                    <label for="m3_3-iframe">
+                        <span class="score">3</span>
+                        <span class="meaning">Neutral</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m3_4-iframe" name="metric3" value="4">
+                    <label for="m3_4-iframe">
+                        <span class="score">4</span>
+                        <span class="meaning">Agree</span>
+                    </label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="m3_5-iframe" name="metric3" value="5">
+                    <label for="m3_5-iframe">
+                        <span class="score">5</span>
+                        <span class="meaning">Strongly Agree</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="actions">
+            <button type="submit" class="submit-btn">Submit Student Evaluation</button>
+        </div>
+    </form>
+</body>
+</html>
+
